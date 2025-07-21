@@ -1,0 +1,87 @@
+<div class="container">
+  <mat-card class="profile-card">
+    <mat-card-header>
+      <div class="profile-avatar">
+        <div class="avatar-circle">
+          <span class="avatar-text">{{ getInitials() }}</span>
+        </div>
+      </div>
+      <mat-card-title>{{ getFullName() }}</mat-card-title>
+      <mat-card-subtitle>User Profile</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <div *ngIf="currentUser" class="profile-details">
+        <div class="detail-section">
+          <h3>Personal Information</h3>
+          <div class="detail-grid">
+            <div class="detail-item">
+              <span class="label">Username:</span>
+              <span class="value">{{ currentUser.username }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="label">Email:</span>
+              <span class="value">{{ currentUser.email }}</span>
+            </div>
+            <div class="detail-item" *ngIf="currentUser.firstName">
+              <span class="label">First Name:</span>
+              <span class="value">{{ currentUser.firstName }}</span>
+            </div>
+            <div class="detail-item" *ngIf="currentUser.lastName">
+              <span class="label">Last Name:</span>
+              <span class="value">{{ currentUser.lastName }}</span>
+            </div>
+            <div class="detail-item" *ngIf="currentUser.createdAt">
+              <span class="label">Member Since:</span>
+              <span class="value">{{ currentUser.createdAt | date:'mediumDate' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3>Account Status</h3>
+          <div class="status-info">
+            <mat-chip color="primary" selected>
+              <mat-icon>check_circle</mat-icon>
+              Active Account
+            </mat-chip>
+            <p class="status-description">
+              Your account is active and you have access to all features of the Cat App.
+            </p>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3>Quick Actions</h3>
+          <div class="action-buttons">
+            <button mat-raised-button color="primary" routerLink="/cats">
+              <mat-icon>pets</mat-icon>
+              Browse Cats
+            </button>
+            <button mat-raised-button color="accent" routerLink="/search">
+              <mat-icon>search</mat-icon>
+              Search Breeds
+            </button>
+            <button mat-button (click)="authService.logout()">
+              <mat-icon>logout</mat-icon>
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="!currentUser" class="no-user">
+        <mat-card>
+          <mat-card-content class="text-center">
+            <mat-icon class="no-user-icon">person_off</mat-icon>
+            <h3>No User Information</h3>
+            <p>Please log in to view your profile information.</p>
+            <button mat-raised-button color="primary" routerLink="/login">
+              Go to Login
+            </button>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div> 

@@ -1,0 +1,101 @@
+<div class="container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Cat Breeds</mat-card-title>
+      <mat-card-subtitle>Select a breed to view details and images</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Select a cat breed</mat-label>
+        <mat-select (selectionChange)="onBreedSelect($event.value)" [disabled]="loading">
+          <mat-option *ngFor="let breed of breeds" [value]="breed.id">
+            {{ breed.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div *ngIf="loading" class="text-center">
+        <mat-spinner></mat-spinner>
+        <p>Loading...</p>
+      </div>
+
+      <div *ngIf="error" class="error-message">
+        <mat-error>{{ error }}</mat-error>
+      </div>
+
+      <div *ngIf="selectedBreed && !loading" class="breed-details">
+        <mat-card class="breed-info">
+          <mat-card-header>
+            <mat-card-title>{{ selectedBreed.name }}</mat-card-title>
+            <mat-card-subtitle>{{ selectedBreed.origin }}</mat-card-subtitle>
+          </mat-card-header>
+          
+          <mat-card-content>
+            <p><strong>Description:</strong> {{ selectedBreed.description }}</p>
+            <p><strong>Life Span:</strong> {{ selectedBreed.life_span }} years</p>
+            <p><strong>Temperament:</strong></p>
+            <div class="temperament-tags">
+              <mat-chip *ngFor="let trait of getTemperamentList(selectedBreed.temperament)" color="primary" selected>
+                {{ trait }}
+              </mat-chip>
+            </div>
+            
+            <div class="breed-stats">
+              <h4>Breed Characteristics</h4>
+              <div class="stats-grid">
+                <div class="stat-item">
+                  <span>Adaptability: {{ selectedBreed.adaptability }}/5</span>
+                  <mat-progress-bar mode="determinate" [value]="selectedBreed.adaptability * 20"></mat-progress-bar>
+                </div>
+                <div class="stat-item">
+                  <span>Affection Level: {{ selectedBreed.affection_level }}/5</span>
+                  <mat-progress-bar mode="determinate" [value]="selectedBreed.affection_level * 20"></mat-progress-bar>
+                </div>
+                <div class="stat-item">
+                  <span>Energy Level: {{ selectedBreed.energy_level }}/5</span>
+                  <mat-progress-bar mode="determinate" [value]="selectedBreed.energy_level * 20"></mat-progress-bar>
+                </div>
+                <div class="stat-item">
+                  <span>Intelligence: {{ selectedBreed.intelligence }}/5</span>
+                  <mat-progress-bar mode="determinate" [value]="selectedBreed.intelligence * 20"></mat-progress-bar>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <div *ngIf="breedImages.length > 0" class="image-carousel">
+          <h3>Breed Images</h3>
+          <mat-card>
+            <mat-card-content>
+              <div class="carousel-container">
+                <button mat-icon-button (click)="previousImage()" [disabled]="currentImageIndex === 0">
+                  <mat-icon>chevron_left</mat-icon>
+                </button>
+                
+                <div class="image-container">
+                  <img [src]="breedImages[currentImageIndex].url" 
+                       [alt]="selectedBreed.name"
+                       class="breed-image">
+                </div>
+                
+                <button mat-icon-button (click)="nextImage()" [disabled]="currentImageIndex === breedImages.length - 1">
+                  <mat-icon>chevron_right</mat-icon>
+                </button>
+              </div>
+              
+              <div class="carousel-indicators">
+                <span *ngFor="let image of breedImages; let i = index" 
+                      class="indicator" 
+                      [class.active]="i === currentImageIndex"
+                      (click)="goToImage(i)">
+                </span>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div> 

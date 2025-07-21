@@ -1,0 +1,115 @@
+<div class="container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Search Cat Breeds</mat-card-title>
+      <mat-card-subtitle>Search and filter cat breeds by name</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <div class="search-section">
+        <mat-form-field appearance="fill" class="search-field">
+          <mat-label>Search breeds</mat-label>
+          <input matInput [(ngModel)]="searchTerm" placeholder="Enter breed name..." (keyup.enter)="searchBreeds()">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+        
+        <div class="search-buttons">
+          <button mat-raised-button color="primary" (click)="searchBreeds()" [disabled]="loading">
+            <mat-icon>search</mat-icon>
+            Search
+          </button>
+          <button mat-button (click)="clearSearch()" [disabled]="loading">
+            <mat-icon>clear</mat-icon>
+            Clear
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="loading" class="text-center">
+        <mat-spinner></mat-spinner>
+        <p>Searching...</p>
+      </div>
+
+      <div *ngIf="error" class="error-message">
+        <mat-error>{{ error }}</mat-error>
+      </div>
+
+      <div *ngIf="!loading && filteredBreeds.length > 0" class="results-section">
+        <h3>Results ({{ filteredBreeds.length }} breeds found)</h3>
+        
+        <div class="table-container">
+          <table mat-table [dataSource]="filteredBreeds" class="breeds-table">
+            <!-- Name Column -->
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Name</th>
+              <td mat-cell *matCellDef="let breed">{{ breed.name }}</td>
+            </ng-container>
+
+            <!-- Origin Column -->
+            <ng-container matColumnDef="origin">
+              <th mat-header-cell *matHeaderCellDef>Origin</th>
+              <td mat-cell *matCellDef="let breed">{{ breed.origin }}</td>
+            </ng-container>
+
+            <!-- Life Span Column -->
+            <ng-container matColumnDef="lifeSpan">
+              <th mat-header-cell *matHeaderCellDef>Life Span</th>
+              <td mat-cell *matCellDef="let breed">{{ breed.life_span }} years</td>
+            </ng-container>
+
+            <!-- Temperament Column -->
+            <ng-container matColumnDef="temperament">
+              <th mat-header-cell *matHeaderCellDef>Temperament</th>
+              <td mat-cell *matCellDef="let breed">
+                <div class="temperament-tags">
+                  <mat-chip *ngFor="let trait of getTemperamentList(breed.temperament).slice(0, 3)" 
+                           color="primary" selected size="small">
+                    {{ trait }}
+                  </mat-chip>
+                  <span *ngIf="getTemperamentList(breed.temperament).length > 3" class="more-traits">
+                    +{{ getTemperamentList(breed.temperament).length - 3 }} more
+                  </span>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- Intelligence Column -->
+            <ng-container matColumnDef="intelligence">
+              <th mat-header-cell *matHeaderCellDef>Intelligence</th>
+              <td mat-cell *matCellDef="let breed">
+                <div class="rating">
+                  <span>{{ breed.intelligence }}/5</span>
+                  <mat-progress-bar mode="determinate" [value]="breed.intelligence * 20"></mat-progress-bar>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- Energy Level Column -->
+            <ng-container matColumnDef="energyLevel">
+              <th mat-header-cell *matHeaderCellDef>Energy Level</th>
+              <td mat-cell *matCellDef="let breed">
+                <div class="rating">
+                  <span>{{ breed.energy_level }}/5</span>
+                  <mat-progress-bar mode="determinate" [value]="breed.energy_level * 20"></mat-progress-bar>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+      </div>
+
+      <div *ngIf="!loading && filteredBreeds.length === 0 && searchTerm" class="no-results">
+        <mat-card>
+          <mat-card-content class="text-center">
+            <mat-icon class="no-results-icon">search_off</mat-icon>
+            <h3>No breeds found</h3>
+            <p>Try searching with different terms or browse all breeds.</p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div> 

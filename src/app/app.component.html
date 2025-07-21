@@ -1,0 +1,16 @@
+<mat-toolbar color="primary">
+  <span>{{ title }}</span>
+  <span class="spacer"></span>
+  <ng-container *ngIf="authService.isLoggedIn(); else authButtons">
+    <button mat-button routerLink="/cats">Cats</button>
+    <button mat-button routerLink="/search">Search</button>
+    <button mat-button routerLink="/profile">Profile</button>
+    <button mat-button (click)="logout()">Logout</button>
+  </ng-container>
+  <ng-template #authButtons>
+    <button mat-button routerLink="/login">Login</button>
+    <button mat-button routerLink="/register">Register</button>
+  </ng-template>
+</mat-toolbar>
+
+<router-outlet></router-outlet> 
